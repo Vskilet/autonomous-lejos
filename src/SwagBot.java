@@ -1,3 +1,4 @@
+import lejos.hardware.Button;
 import lejos.hardware.motor.EV3LargeRegulatedMotor;
 import lejos.hardware.port.Port;
 import lejos.hardware.sensor.EV3ColorSensor;
@@ -15,23 +16,22 @@ public class SwagBot{
     private EV3UltrasonicSensor ultrasonic;
     private SampleProvider ultrasonic_provider;
     private EV3ColorSensor color_sensor;
-    private EV3TouchSensor button_sensor;
+    private Button buttons;
 
     private float white;
     private float black;
     private float midpoint;
     private float max_speed;
 
-    public SwagBot(Port motor_left, Port motor_right, Port port_button_sensor, Port port_ultrasonic, Port port_color_sensor) {
-        this(motor_left, motor_right, port_button_sensor, port_ultrasonic);
+    public SwagBot(Port motor_left, Port motor_right, Port port_ultrasonic, Port port_color_sensor) {
+        this(motor_left, motor_right, port_ultrasonic);
         this.color_sensor = new EV3ColorSensor(port_color_sensor);
     }
 
-    public SwagBot(Port motor_left, Port motor_right, Port port_button_sensor, Port port_ultrasonic) {
+    public SwagBot(Port motor_left, Port motor_right, Port port_ultrasonic) {
         this(motor_left, motor_right);
         this.ultrasonic = new EV3UltrasonicSensor(port_ultrasonic);
         this.ultrasonic_provider = this.ultrasonic.getDistanceMode();
-        this.button_sensor = new EV3TouchSensor(port_button_sensor);
     }
 
 
@@ -48,14 +48,6 @@ public class SwagBot{
         this.motor_right.close();
         this.ultrasonic.close();
         this.color_sensor.close();
-    }
-
-    public boolean isPush(){
-        SensorMode touch = button_sensor.getTouchMode();
-        float[] sample = new float[touch.sampleSize()];
-        touch.fetchSample(sample,0);
-        int is_touch = (int)sample[0];
-        return (is_touch == 1);
     }
 
     public void stop() {
@@ -129,15 +121,11 @@ public class SwagBot{
 
     public void calibration() {
         System.out.println("Noir");
-        while (!this.isPush()){
-
-        }
+        buttons.waitForAnyPress()
         this.black = this.mean_rgb();
         Delay.msDelay(1000);
         System.out.println("Blanc");
-        while (!this.isPush()){
-
-        }
+        buttons.waitForAnyPress();
         this.white = this.mean_rgb();
 
         this.midpoint = ( this.white - this.black ) / 2 + this.black;
@@ -150,7 +138,7 @@ public class SwagBot{
         float last_error = 0;
         float integral = 0;
 
-        while(!this.isPush()){
+        while(! (buttons.waitForAnyEvent() == Button.ID_UP)){
             float value = this.mean_rgb();
             float error = this.midpoint - value;
             integral = error + integral;
