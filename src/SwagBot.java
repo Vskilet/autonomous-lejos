@@ -23,7 +23,7 @@ public class SwagBot{
     private float max_speed;
 
     public SwagBot(Port motor_left, Port motor_right, Port port_button_sensor, Port port_ultrasonic, Port port_color_sensor) {
-        this(motor_left, motor_right, port_ultrasonic, port_button_sensor);
+        this(motor_left, motor_right, port_button_sensor, port_ultrasonic);
         this.color_sensor = new EV3ColorSensor(port_color_sensor);
     }
 
