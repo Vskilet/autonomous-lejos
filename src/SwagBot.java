@@ -121,7 +121,7 @@ public class SwagBot{
 
     public void calibration() {
         System.out.println("Noir");
-        buttons.waitForAnyPress()
+        buttons.waitForAnyPress();
         this.black = this.mean_rgb();
         Delay.msDelay(1000);
         System.out.println("Blanc");
@@ -131,6 +131,10 @@ public class SwagBot{
         this.midpoint = ( this.white - this.black ) / 2 + this.black;
 
         Delay.msDelay(1000);
+    }
+
+    public float getMidpoint() {
+        return midpoint;
     }
 
     public void line_follower_pid(int speed, float kp, float ki, float kd) {
