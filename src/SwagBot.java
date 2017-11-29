@@ -48,8 +48,8 @@ public class SwagBot{
     }
 
     public void stop() {
-        this.motor_left.stop(true);
-        this.motor_right.stop();
+        this.motor_left.setSpeed(0);
+        this.motor_right.setSpeed(0);
     }
 
     public void rotate(float angle) {
