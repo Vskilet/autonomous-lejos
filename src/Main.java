@@ -21,7 +21,7 @@ public class Main {
     }
 
     public static class LineFollower implements Runnable {
-        SwagBot robot;
+        final SwagBot robot;
         LejosPID PID;
         float BASE_SPEED = 500;
         private volatile boolean running = true;
@@ -42,6 +42,14 @@ public class Main {
                 float direction = PID.getOutput((robot.mean_rgb() - robot.getBlack()) * 1.f/robot.getWhite());
                 //System.out.println(direction);
                 robot.speed((int)(BASE_SPEED - (direction * BASE_SPEED)), (int)(BASE_SPEED + (direction * BASE_SPEED)));
+
+                synchronized (robot) {
+                    try {
+                        robot.wait();
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
             }
         }
 
@@ -49,7 +57,7 @@ public class Main {
 
     public static class BarriersDetect implements Runnable {
 
-        SwagBot robot;
+        final SwagBot robot;
 
         private volatile boolean running = true;
 
@@ -71,6 +79,10 @@ public class Main {
                 if (dist <= 30){
                     robot.stop();
                     System.out.println("Robot has STOP !");
+                } else {
+                    synchronized (robot) {
+                        robot.notifyAll();
+                    }
                 }
             }
         }
