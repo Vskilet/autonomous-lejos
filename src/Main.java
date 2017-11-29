@@ -39,7 +39,7 @@ public class Main {
         @Override
         public void run() {
             while(running){
-                float direction = PID.getOutput(robot.mean_rgb() * 1.f/robot.getWhite());
+                float direction = PID.getOutput((robot.mean_rgb() - robot.getBlack()) * 1.f/robot.getWhite());
                 //System.out.println(direction);
                 robot.speed((int)(BASE_SPEED - (direction * BASE_SPEED)), (int)(BASE_SPEED + (direction * BASE_SPEED)));
             }
