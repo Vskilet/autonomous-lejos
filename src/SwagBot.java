@@ -1,10 +1,7 @@
 import lejos.hardware.Button;
 import lejos.hardware.motor.EV3LargeRegulatedMotor;
 import lejos.hardware.port.Port;
-import lejos.hardware.sensor.EV3ColorSensor;
-import lejos.hardware.sensor.EV3TouchSensor;
-import lejos.hardware.sensor.EV3UltrasonicSensor;
-import lejos.hardware.sensor.SensorMode;
+import lejos.hardware.sensor.*;
 import lejos.robotics.*;
 import lejos.robotics.filter.MeanFilter;
 import lejos.utility.Delay;
@@ -13,7 +10,7 @@ public class SwagBot{
 
     private RegulatedMotor motor_left;
     private RegulatedMotor motor_right;
-    private EV3UltrasonicSensor ultrasonic;
+    private EV3IRSensor ultrasonic;
     private SampleProvider ultrasonic_provider;
     private EV3ColorSensor color_sensor;
     private Button buttons;
@@ -30,7 +27,7 @@ public class SwagBot{
 
     public SwagBot(Port motor_left, Port motor_right, Port port_ultrasonic) {
         this(motor_left, motor_right);
-        this.ultrasonic = new EV3UltrasonicSensor(port_ultrasonic);
+        this.ultrasonic = new EV3IRSensor(port_ultrasonic);
         this.ultrasonic_provider = this.ultrasonic.getDistanceMode();
     }
 
