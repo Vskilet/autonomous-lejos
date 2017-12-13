@@ -17,6 +17,7 @@ public class SwagBot{
 
     private float white;
     private float black;
+    private float orange;
     private float midpoint;
     private float max_speed;
 
@@ -124,6 +125,10 @@ public class SwagBot{
         System.out.println("Blanc");
         Button.waitForAnyPress();
         this.white = this.mean_rgb();
+        Delay.msDelay(1000);
+        System.out.println("Orange");
+        Button.waitForAnyPress();
+        this.orange = this.mean_rgb();
 
         this.midpoint = ( this.white - this.black ) / 2 + this.black;
 
