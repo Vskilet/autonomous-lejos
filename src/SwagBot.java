@@ -118,11 +118,11 @@ public class SwagBot{
 
     public void calibration() {
         System.out.println("Noir");
-        buttons.waitForAnyPress();
+        Button.waitForAnyPress();
         this.black = this.mean_rgb();
         Delay.msDelay(1000);
         System.out.println("Blanc");
-        buttons.waitForAnyPress();
+        Button.waitForAnyPress();
         this.white = this.mean_rgb();
 
         this.midpoint = ( this.white - this.black ) / 2 + this.black;
