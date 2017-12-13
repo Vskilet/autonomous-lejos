@@ -33,6 +33,7 @@ public class Main {
         boss_thread.start();
         Button.waitForAnyPress();
         boss.terminate();
+        System.exit(0);
     }
 
 }
