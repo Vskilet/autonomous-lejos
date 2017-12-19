@@ -21,21 +21,14 @@ public class LineFollower implements Runnable {
     @Override
     public void run() {
         while(running){
+            boss.setColorDetect(robot.mean_rgb());
+
             float direction = PID.getOutput((robot.mean_rgb() - robot.getBlack()) * 1.f/robot.getWhite());
 
             int speedLeft = (int)(BASE_SPEED - (direction * BASE_SPEED));
             int speedRight = (int)(BASE_SPEED + (direction * BASE_SPEED));
 
             boss.speed(speedLeft, speedRight);
-
-            /*
-            synchronized (robot) {
-                try {
-                    robot.wait();
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }*/
         }
     }
 

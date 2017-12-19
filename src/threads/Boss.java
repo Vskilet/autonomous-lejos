@@ -1,6 +1,8 @@
 import lejos.hardware.port.MotorPort;
 import lejos.hardware.port.SensorPort;
 
+import java.awt.*;
+
 public class Boss implements Runnable {
     private static Boss instance = null;
 
@@ -11,6 +13,8 @@ public class Boss implements Runnable {
     private int speed_right;
 
     private float distance = Float.POSITIVE_INFINITY;
+    private float color = 0.f;
+    private boolean authorized = true;
 
     private Boss() {
         robot = new SwagBot(MotorPort.B, MotorPort.C, SensorPort.S2, SensorPort.S3);
@@ -26,6 +30,10 @@ public class Boss implements Runnable {
 
     public synchronized void setDistance(float distance) {
         this.distance = distance;
+    }
+
+    public synchronized void setColorDetect(float color) {
+        this.color = color;
     }
 
     public SwagBot getRobot() {
@@ -53,12 +61,18 @@ public class Boss implements Runnable {
         barriers_detector_thread.start();
 
         while (running) {
-            if(distance < 30) {
+            if (color == robot.getOrange() || authorized == false){
                 robot.stop();
-            } else if (30 < distance && distance < 50) {
-                robot.speed(speed_left/2, speed_right/2);
-            } else {
-                robot.speed(speed_left, speed_right);
+                authorized = false;
+            }
+            if (authorized){
+                if(distance < 30) {
+                    robot.stop();
+                } else if (30 < distance && distance < 50) {
+                    robot.speed(speed_left/2, speed_right/2);
+                } else {
+                    robot.speed(speed_left, speed_right);
+                }
             }
         }
 
