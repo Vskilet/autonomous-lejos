@@ -1,6 +1,7 @@
 #!/bin/python3
 
 import paho.mqtt.client as mqtt
+import paho.mqtt.publish as publish
 import json
 from enum import Enum, unique
 from threading import Lock
@@ -19,11 +20,17 @@ class Type(Enum):
     RELEASE = 3
 
 
+def generate_autorisation(uuid):
+    publish.single("lejos/autorisation",
+                   json.dumps({"type": Type.AUTORISATION.value, "UUID": uuid}),
+                   hostname="172.20.50.106")
+
+
 # The callback for when the client receives a CONNACK response from the server.
 def on_connect(client, userdata, flags, rc):
     print("Connected with result code "+str(rc))
 
-    client.subscribe("lejos/#")
+    client.subscribe("lejos/request")
 
 
 # The callback for when a PUBLISH message is received from the server.
@@ -35,7 +42,7 @@ def on_message(client, userdata, msg):
     json_message = json.loads(msg.payload)
 
     mutex.acquire()
-    
+
     print()
     print("=============================")
     print()
@@ -46,16 +53,19 @@ def on_message(client, userdata, msg):
         if crossing_robot is None:
             print('Autorisation')
             crossing_robot = json_message['UUID']
+            generate_autorisation(crossing_robot)
         elif crossing_robot != json_message['UUID']:
             print('Waiting')
             waiting_robot = json_message['UUID']
     elif json_message['type'] == Type.RELEASE.value:
         print('Release')
-        crossing_robot = None
-        if waiting_robot is not None:
-            print('Autorisation')
-            crossing_robot = waiting_robot
-            waiting_robot = None
+        if crossing_robot == json_message['UUID']:
+            crossing_robot = None
+            if waiting_robot is not None:
+                print('Autorisation')
+                crossing_robot = waiting_robot
+                waiting_robot = None
+                generate_autorisation(crossing_robot)
 
     print("crossing_robot: " + str(crossing_robot))
     print("waiting_robot: " + str(waiting_robot))
