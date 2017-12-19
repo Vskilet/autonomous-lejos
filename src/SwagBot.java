@@ -13,7 +13,6 @@ public class SwagBot{
     private EV3IRSensor ultrasonic;
     private SampleProvider ultrasonic_provider;
     private EV3ColorSensor color_sensor;
-    private Button buttons;
 
     private float white;
     private float black;
@@ -83,15 +82,6 @@ public class SwagBot{
         return(samples[0]);
     }
 
-    public int color() {
-        SensorMode color_mode = this.color_sensor.getColorIDMode();
-        float [] color_sample = new float[color_mode.sampleSize()];
-        this.color_sensor.setFloodlight(true);
-        color_mode.fetchSample(color_sample, 0);
-        int colorId = (int)color_sample[0];
-        return colorId;
-    }
-
     public float getMaxSpeed(){
         return max_speed;
     }
@@ -102,6 +92,10 @@ public class SwagBot{
 
     public float getBlack() {
         return black;
+    }
+
+    public float getOrange()  {
+        return orange;
     }
 
     public float[] rgb_data() {
@@ -133,33 +127,5 @@ public class SwagBot{
         this.midpoint = ( this.white - this.black ) / 2 + this.black;
 
         Delay.msDelay(1000);
-    }
-
-    public float getMidpoint() {
-        return midpoint;
-    }
-
-    public void line_follower_pid(int speed, float kp, float ki, float kd) {
-
-        float last_error = 0;
-        float integral = 0;
-
-        while(! (buttons.waitForAnyEvent() == Button.ID_UP)){
-            float value = this.mean_rgb();
-            float error = this.midpoint - value;
-            integral = error + integral;
-            float derivative = error - last_error;
-
-            float correction = kp * error + ki * integral + kd * derivative;
-
-            System.out.println(correction);
-
-            float left_speed = speed - correction;
-            float right_speed = speed + correction;
-
-            this.speed((int)left_speed, (int)right_speed);
-
-            last_error = error;
-        }
     }
 }
