@@ -1,5 +1,3 @@
 Manifest-Version: 1.0
-Class-Path: /home/root/lejos/lib/ev3classes.jar /home/root/lejos/lib/o
- pencv-2411.jar /home/root/lejos/lib/dbusjava.jar /home/root/lejos/lib
- jna/usr/share/java/jna.jar /home/lejos/lib/org.eclipse.paho.client.mqttv3-1.2.0.jar
+Class-Path: /home/root/lejos/lib/ev3classes.jar /home/root/lejos/lib/opencv-2411.jar /home/root/lejos/lib/dbusjava.jar /home/root/lejos/libjna/usr/share/java/jna.jar /home/lejos/lib/org.eclipse.paho.client.mqttv3-1.2.0.jar /home/lejos/lib/gson-2.8.2.jar
 Main-Class: Main
