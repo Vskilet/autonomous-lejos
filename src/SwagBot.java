@@ -126,4 +126,12 @@ public class SwagBot{
 
         Delay.msDelay(1000);
     }
+
+    public int getTachoCount() {
+        return this.motor_left.getTachoCount();
+    }
+
+    public void resetTachoCount(){
+        this.motor_left.resetTachoCount();
+    }
 }

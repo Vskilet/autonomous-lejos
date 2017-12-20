@@ -76,9 +76,15 @@ public class Boss implements Runnable {
         Thread barriers_detector_thread = new Thread(barriers_detector);
         barriers_detector_thread.start();
 
+        boolean crossing = false;
+
         while (running) {
             if (authorized){
-                communication.sendMessage(3);
+                if (robot.getTachoCount() > 4000 && crossing){
+                    System.out.println("Sorti");
+                    communication.sendMessage(3);
+                    crossing = false;
+                }
                 if(distance < 30) {
                     robot.stop();
                 } else if (30 < distance && distance < 50) {
@@ -94,6 +100,8 @@ public class Boss implements Runnable {
                 )){
                     robot.stop();
                     authorized = false;
+                    crossing = true;
+                    robot.resetTachoCount();
                     communication.sendMessage(1);
                     Sound.beepSequence();
                 }
