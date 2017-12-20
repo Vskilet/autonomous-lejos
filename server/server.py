@@ -6,7 +6,7 @@ import json
 from enum import Enum, unique
 from threading import Lock
 import argparse
-
+from collections import deque
 
 parser = argparse.ArgumentParser(description='MQTT Lejos Server')
 parser.add_argument('--ip', required=True,
@@ -16,7 +16,7 @@ args = parser.parse_args()
 
 
 crossing_robot = None
-waiting_robot = None
+waiting_robots = deque()
 
 mutex = Lock()
 
@@ -44,7 +44,7 @@ def on_connect(client, userdata, flags, rc):
 # The callback for when a PUBLISH message is received from the server.
 def on_message(client, userdata, msg):
     global crossing_robot
-    global waiting_robot
+    global waiting_robots
     global mutex
 
     json_message = json.loads(msg.payload)
@@ -65,7 +65,7 @@ def on_message(client, userdata, msg):
             generate_autorisation(crossing_robot)
         elif crossing_robot != robot_uuid:
             print('Waiting')
-            waiting_robot = robot_uuid
+            waiting_robots.append(robot_uuid)
         elif crossing_robot == robot_uuid:
             print('Autorisation')
             crossing_robot = robot_uuid
@@ -74,14 +74,13 @@ def on_message(client, userdata, msg):
         print('Release')
         if crossing_robot == robot_uuid:
             crossing_robot = None
-            if waiting_robot is not None:
+            if waiting_robots:
                 print('Autorisation')
-                crossing_robot = waiting_robot
-                waiting_robot = None
+                crossing_robot = waiting_robots.popleft()
                 generate_autorisation(crossing_robot)
 
     print("crossing_robot: " + str(crossing_robot))
-    print("waiting_robot: " + str(waiting_robot))
+    print("waiting_robots: " + str(waiting_robots))
     mutex.release()
 
 
