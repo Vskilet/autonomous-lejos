@@ -30,7 +30,7 @@ class Type(Enum):
 
 def generate_autorisation(uuid):
     publish.single("lejos/autorisation",
-                   json.dumps({"type": Type.AUTORISATION.value, "UUID": uuid}),
+                   json.dumps({"type": Type.AUTORISATION.value, "uuid": uuid}),
                    hostname=args.ip)
 
 
