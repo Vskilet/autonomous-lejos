@@ -7,6 +7,7 @@ public class Communication implements MqttCallback{
 
     private final String uuid;
     private final MqttClient client;
+    private final Boss boss;
 
     public final int REQUEST = 1;
     public final int AUTORISATION = 2;
@@ -23,8 +24,7 @@ public class Communication implements MqttCallback{
     }
 
     public Communication(String server) throws MqttException {
-        //this.boss = Boss.getInstance();
-        //this.robot = boss.getRobot();
+        this.boss = Boss.getInstance();
         this.uuid = UUID.randomUUID().toString();
 
         client = new MqttClient(server, this.uuid);
@@ -45,6 +45,7 @@ public class Communication implements MqttCallback{
 
         if (mqttMessage.type == this.AUTORISATION && mqttMessage.uuid.equals(this.uuid)) {
             System.out.println("C'est parti !");
+            boss.setAuthorized(true);
         }
     }
 
@@ -53,11 +54,30 @@ public class Communication implements MqttCallback{
         MqttMessage mqttMessage = new MqttMessage(json.getBytes());
         mqttMessage.setQos(2);
 
-        try {
-            client.publish("lejos/request", mqttMessage);
-        } catch (MqttException e) {
-            e.printStackTrace();
+        SendThread sendThread = new SendThread(client, mqttMessage);
+        Thread sendThread_thread = new Thread(sendThread);
+        sendThread_thread.start();
+    }
+
+    static private class SendThread implements Runnable {
+
+        private final MqttClient client;
+        private final MqttMessage mqttMessage;
+
+        public SendThread(MqttClient client, MqttMessage mqttMessage) {
+            this.client = client;
+            this.mqttMessage = mqttMessage;
         }
+
+        @Override
+        public void run() {
+            try {
+                client.publish("lejos/request", mqttMessage);
+            } catch (MqttException e) {
+                e.printStackTrace();
+            }
+        }
+
     }
 
     @Override
