@@ -1,28 +1,27 @@
-import lejos.hardware.Button;
 import lejos.hardware.Sound;
 import lejos.hardware.port.MotorPort;
 import lejos.hardware.port.SensorPort;
-import lejos.robotics.Color;
-import lejos.utility.Delay;
-
-import java.awt.*;
 
 public class Boss implements Runnable {
     private static Boss instance = null;
 
     private final SwagBot robot;
+    private final float[] initialOrange;
+    private final double precision;
     private volatile boolean running = true;
 
     private int speed_left;
     private int speed_right;
 
     private float distance = Float.POSITIVE_INFINITY;
-    private float[] color;
+    private float[] measuredColor;
     private boolean authorized = true;
 
     private Boss() {
         robot = new SwagBot(MotorPort.B, MotorPort.C, SensorPort.S2, SensorPort.S3);
         robot.calibration();
+        precision = 0.02;
+        initialOrange =  robot.getOrange();
     }
 
     public static Boss getInstance() {
@@ -36,8 +35,8 @@ public class Boss implements Runnable {
         this.distance = distance;
     }
 
-    public synchronized void setColorDetect(float[] color) {
-        this.color = color;
+    public synchronized void setColorDetect(float[] measuredColor) {
+        this.measuredColor = measuredColor;
     }
 
     public SwagBot getRobot() {
@@ -74,13 +73,11 @@ public class Boss implements Runnable {
                     robot.speed(speed_left, speed_right);
                 }
 
-                float[] orange = robot.getOrange();
-                double precision = 0.02;
-                System.out.println("color0 " + color[0] + "color1 " + color[1] + "color2 " + color[2]);
-                if ((
-                        color[0] > orange[0] - precision) && (color[0] < orange[0] + precision)
-                        && (color[1] > orange[1] - precision) && (color[1] < orange[1] + precision)
-                        && (color[2] > orange[2] - precision) && (color[2] < orange[2] + precision
+                System.out.println("color0 " + measuredColor[0] + "color1 " + measuredColor[1] + "color2 " + measuredColor[2]);
+                if (
+                        (measuredColor[0] > initialOrange[0] - precision) && (measuredColor[0] < initialOrange[0] + precision)
+                        && (measuredColor[1] > initialOrange[1] - precision) && (measuredColor[1] < initialOrange[1] + precision)
+                        && (measuredColor[2] > initialOrange[2] - precision) && (measuredColor[2] < initialOrange[2] + precision
                 )){
                     robot.stop();
                     authorized = false;
