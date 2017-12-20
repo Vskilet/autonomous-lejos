@@ -24,7 +24,7 @@ public class Boss implements Runnable {
     private Boss() {
         robot = new SwagBot(MotorPort.B, MotorPort.C, SensorPort.S2, SensorPort.S3);
         robot.calibration();
-        precision = 0.02;
+        precision = 0.03;
         initialOrange =  robot.getOrange();
     }
 
@@ -96,8 +96,8 @@ public class Boss implements Runnable {
                 if (
                         (measuredColor[0] > initialOrange[0] - precision) && (measuredColor[0] < initialOrange[0] + precision)
                         && (measuredColor[1] > initialOrange[1] - precision) && (measuredColor[1] < initialOrange[1] + precision)
-                        && (measuredColor[2] > initialOrange[2] - precision) && (measuredColor[2] < initialOrange[2] + precision
-                ) & !crossing){
+                        && (measuredColor[2] > initialOrange[2] - precision) && (measuredColor[2] < initialOrange[2] + precision)
+                        && !crossing){
                     robot.stop();
                     authorized = false;
                     crossing = true;
