@@ -13,16 +13,18 @@ public class SwagBot{
     private EV3IRSensor ultrasonic;
     private SampleProvider ultrasonic_provider;
     private EV3ColorSensor color_sensor;
+    private SensorMode rgb_mode;
 
     private float white;
     private float black;
-    private float orange;
+    private float[] orange;
     private float midpoint;
     private float max_speed;
 
     public SwagBot(Port motor_left, Port motor_right, Port port_ultrasonic, Port port_color_sensor) {
         this(motor_left, motor_right, port_ultrasonic);
         this.color_sensor = new EV3ColorSensor(port_color_sensor);
+        rgb_mode = this.color_sensor.getRGBMode();
     }
 
     public SwagBot(Port motor_left, Port motor_right, Port port_ultrasonic) {
@@ -94,14 +96,8 @@ public class SwagBot{
         return black;
     }
 
-    public float getOrange()  {
-        return orange;
-    }
-
     public float[] rgb_data() {
-        SensorMode rgb_mode = this.color_sensor.getRGBMode();
         float [] rgb_sample = new float[rgb_mode.sampleSize()];
-        this.color_sensor.setFloodlight(true);
         rgb_mode.fetchSample(rgb_sample, 0);
         return rgb_sample;
     }
@@ -122,7 +118,7 @@ public class SwagBot{
         Delay.msDelay(1000);
         System.out.println("Orange");
         Button.waitForAnyPress();
-        this.orange = this.mean_rgb();
+        this.orange = this.rgb_data();
 
         this.midpoint = ( this.white - this.black ) / 2 + this.black;
 
