@@ -1,6 +1,7 @@
 import lejos.hardware.Sound;
 import lejos.hardware.port.MotorPort;
 import lejos.hardware.port.SensorPort;
+import org.eclipse.paho.client.mqttv3.MqttException;
 
 public class Boss implements Runnable {
     private static Boss instance = null;
@@ -8,6 +9,9 @@ public class Boss implements Runnable {
     private final SwagBot robot;
     private final float[] initialOrange;
     private final double precision;
+
+    private Communication communication;
+
     private volatile boolean running = true;
 
     private int speed_left;
@@ -39,6 +43,10 @@ public class Boss implements Runnable {
         this.measuredColor = measuredColor;
     }
 
+    public synchronized void setAuthorized(boolean authorized) {
+        this.authorized = authorized;
+    }
+
     public SwagBot getRobot() {
         return robot;
     }
@@ -54,6 +62,13 @@ public class Boss implements Runnable {
 
     @Override
     public void run() {
+        try {
+            this.communication = new Communication("tcp://192.168.43.194:1883");
+        } catch (MqttException e) {
+            e.printStackTrace();
+        }
+
+
         LineFollower line_follower = new LineFollower();
         Thread line_follower_thread = new Thread(line_follower);
         line_follower_thread.start();
@@ -64,7 +79,7 @@ public class Boss implements Runnable {
 
         while (running) {
             if (authorized){
-
+                communication.sendMessage(3);
                 if(distance < 30) {
                     robot.stop();
                 } else if (30 < distance && distance < 50) {
@@ -81,6 +96,7 @@ public class Boss implements Runnable {
                 )){
                     robot.stop();
                     authorized = false;
+                    communication.sendMessage(1);
                     Sound.beepSequence();
                 }
             }
