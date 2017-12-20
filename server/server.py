@@ -66,6 +66,10 @@ def on_message(client, userdata, msg):
         elif crossing_robot != robot_uuid:
             print('Waiting')
             waiting_robot = robot_uuid
+        elif crossing_robot == robot_uuid:
+            print('Autorisation')
+            crossing_robot = robot_uuid
+            generate_autorisation(crossing_robot)
     elif json_message['type'] == Type.RELEASE.value:
         print('Release')
         if crossing_robot == robot_uuid:
