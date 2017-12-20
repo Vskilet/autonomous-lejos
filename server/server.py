@@ -5,6 +5,14 @@ import paho.mqtt.publish as publish
 import json
 from enum import Enum, unique
 from threading import Lock
+import argparse
+
+
+parser = argparse.ArgumentParser(description='MQTT Lejos Server')
+parser.add_argument('--ip', required=True,
+                    help='IP Address of the MQTT server')
+
+args = parser.parse_args()
 
 
 crossing_robot = None
@@ -23,7 +31,7 @@ class Type(Enum):
 def generate_autorisation(uuid):
     publish.single("lejos/autorisation",
                    json.dumps({"type": Type.AUTORISATION.value, "UUID": uuid}),
-                   hostname="172.20.50.106")
+                   hostname=args.ip)
 
 
 # The callback for when the client receives a CONNACK response from the server.
@@ -76,7 +84,7 @@ client = mqtt.Client()
 client.on_connect = on_connect
 client.on_message = on_message
 
-client.connect("172.20.50.106", 1883, 60)
+client.connect(args.ip, 1883, 60)
 
 # Blocking call that processes network traffic, dispatches callbacks and
 # handles reconnecting.
