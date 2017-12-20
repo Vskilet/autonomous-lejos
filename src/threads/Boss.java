@@ -97,7 +97,7 @@ public class Boss implements Runnable {
                         (measuredColor[0] > initialOrange[0] - precision) && (measuredColor[0] < initialOrange[0] + precision)
                         && (measuredColor[1] > initialOrange[1] - precision) && (measuredColor[1] < initialOrange[1] + precision)
                         && (measuredColor[2] > initialOrange[2] - precision) && (measuredColor[2] < initialOrange[2] + precision
-                )){
+                ) & !crossing){
                     robot.stop();
                     authorized = false;
                     crossing = true;
