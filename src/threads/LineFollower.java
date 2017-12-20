@@ -21,7 +21,7 @@ public class LineFollower implements Runnable {
     @Override
     public void run() {
         while(running){
-            boss.setColorDetect(robot.mean_rgb());
+            boss.setColorDetect(robot.rgb_data());
 
             float direction = PID.getOutput((robot.mean_rgb() - robot.getBlack()) * 1.f/robot.getWhite());
 
