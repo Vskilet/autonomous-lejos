@@ -48,26 +48,27 @@ def on_message(client, userdata, msg):
     global mutex
 
     json_message = json.loads(msg.payload)
+    robot_uuid = json_message['uuid']
 
     mutex.acquire()
 
     print()
     print("=============================")
     print()
-    print("robot UUID: " + json_message['UUID'])
+    print("robot UUID: " + robot_uuid)
 
     if json_message['type'] == Type.REQUEST.value:
         print('Request')
         if crossing_robot is None:
             print('Autorisation')
-            crossing_robot = json_message['UUID']
+            crossing_robot = robot_uuid
             generate_autorisation(crossing_robot)
-        elif crossing_robot != json_message['UUID']:
+        elif crossing_robot != robot_uuid:
             print('Waiting')
-            waiting_robot = json_message['UUID']
+            waiting_robot = robot_uuid
     elif json_message['type'] == Type.RELEASE.value:
         print('Release')
-        if crossing_robot == json_message['UUID']:
+        if crossing_robot == robot_uuid:
             crossing_robot = None
             if waiting_robot is not None:
                 print('Autorisation')
