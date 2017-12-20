@@ -96,6 +96,8 @@ public class SwagBot{
         return black;
     }
 
+    public float[] getOrange() { return orange; }
+
     public float[] rgb_data() {
         float [] rgb_sample = new float[rgb_mode.sampleSize()];
         rgb_mode.fetchSample(rgb_sample, 0);
