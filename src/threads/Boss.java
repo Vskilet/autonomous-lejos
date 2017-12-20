@@ -68,7 +68,6 @@ public class Boss implements Runnable {
             e.printStackTrace();
         }
 
-
         LineFollower line_follower = new LineFollower();
         Thread line_follower_thread = new Thread(line_follower);
         line_follower_thread.start();
@@ -88,7 +87,6 @@ public class Boss implements Runnable {
                     robot.speed(speed_left, speed_right);
                 }
 
-                System.out.println("color0 " + measuredColor[0] + "color1 " + measuredColor[1] + "color2 " + measuredColor[2]);
                 if (
                         (measuredColor[0] > initialOrange[0] - precision) && (measuredColor[0] < initialOrange[0] + precision)
                         && (measuredColor[1] > initialOrange[1] - precision) && (measuredColor[1] < initialOrange[1] + precision)

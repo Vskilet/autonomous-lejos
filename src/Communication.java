@@ -44,7 +44,7 @@ public class Communication implements MqttCallback{
         Message mqttMessage = new Gson().fromJson(mqttJson.toString(), Message.class);
 
         if (mqttMessage.type == this.AUTORISATION && mqttMessage.uuid.equals(this.uuid)) {
-            System.out.println("C'est parti !");
+            System.out.println("Let's GO !");
             boss.setAuthorized(true);
         }
     }
