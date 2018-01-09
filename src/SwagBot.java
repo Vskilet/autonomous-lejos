@@ -1,4 +1,6 @@
+import lejos.hardware.BrickFinder;
 import lejos.hardware.Button;
+import lejos.hardware.LED;
 import lejos.hardware.motor.EV3LargeRegulatedMotor;
 import lejos.hardware.port.Port;
 import lejos.hardware.sensor.*;
@@ -14,6 +16,7 @@ public class SwagBot{
     private SampleProvider ultrasonic_provider;
     private EV3ColorSensor color_sensor;
     private SensorMode rgb_mode;
+    private LED led;
 
     private float white;
     private float black;
@@ -38,6 +41,9 @@ public class SwagBot{
         this.motor_left = new EV3LargeRegulatedMotor(motor_left);
         this.max_speed = this.motor_left.getMaxSpeed();
         this.motor_right = new EV3LargeRegulatedMotor(motor_right);
+
+        this.led = BrickFinder.getLocal().getLED();
+        this.led.setPattern(0);
     }
 
     protected void finalize() throws Throwable {
@@ -133,5 +139,9 @@ public class SwagBot{
 
     public void resetTachoCount(){
         this.motor_left.resetTachoCount();
+    }
+
+    public void setLEDColor(int pattern){
+        led.setPattern(pattern);
     }
 }

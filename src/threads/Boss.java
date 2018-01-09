@@ -1,4 +1,7 @@
+import lejos.hardware.BrickFinder;
+import lejos.hardware.LED;
 import lejos.hardware.Sound;
+import lejos.hardware.Brick;
 import lejos.hardware.port.MotorPort;
 import lejos.hardware.port.SensorPort;
 import org.eclipse.paho.client.mqttv3.MqttException;
@@ -104,6 +107,11 @@ public class Boss implements Runnable {
                     robot.resetTachoCount();
                     communication.sendMessage(1);
                     Sound.beepSequence();
+                    robot.setLEDColor(8);
+                } else if (crossing) {
+                    robot.setLEDColor(1);
+                } else {
+                    robot.setLEDColor(0);
                 }
             }
         }
