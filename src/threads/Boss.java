@@ -104,9 +104,7 @@ public class Boss implements Runnable {
                     authorized = false;
                     crossing = true;
                     robot.resetTachoCount();
-                    robot.stop();
                     communication.sendMessage(1);
-                    robot.speed(speed_left, speed_right);
                     Sound.beepSequence();
                     robot.setLEDColor(8);
                 } else if (crossing) {
