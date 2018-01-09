@@ -101,17 +101,24 @@ public class Boss implements Runnable {
                         && (measuredColor[1] > initialOrange[1] - precision) && (measuredColor[1] < initialOrange[1] + precision)
                         && (measuredColor[2] > initialOrange[2] - precision) && (measuredColor[2] < initialOrange[2] + precision)
                         && !crossing){
-                    robot.stop();
                     authorized = false;
                     crossing = true;
                     robot.resetTachoCount();
+                    robot.stop();
                     communication.sendMessage(1);
+                    robot.speed(speed_left, speed_right);
                     Sound.beepSequence();
                     robot.setLEDColor(8);
                 } else if (crossing) {
                     robot.setLEDColor(1);
                 } else {
                     robot.setLEDColor(0);
+                }
+            } else {
+                if (robot.getTachoCount() > 1000) {
+                    robot.stop();
+                } else {
+                    robot.speed(speed_left, speed_right);
                 }
             }
         }
