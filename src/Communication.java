@@ -31,6 +31,8 @@ public class Communication implements MqttCallback{
         client.connect();
         client.setCallback(this);
         client.subscribe("lejos/autorisation", 2);
+        System.out.println("Sending test ...");
+        this.sendMessage(3);
         System.out.println("Pret");
     }
 
