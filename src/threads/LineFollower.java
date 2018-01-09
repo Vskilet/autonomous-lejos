@@ -25,7 +25,7 @@ public class LineFollower implements Runnable {
 
             float direction = PID.getOutput((robot.mean_rgb() - robot.getBlack()) * 1.f/robot.getWhite());
 
-            int speedLeft = (int)(BASE_SPEED - (direction * BASE_SPEED) * 1.5);
+            int speedLeft = (int)(BASE_SPEED - (direction * BASE_SPEED) * 2.5);
             int speedRight = (int)(BASE_SPEED + (direction * BASE_SPEED));
 
             boss.speed(speedLeft, speedRight);
